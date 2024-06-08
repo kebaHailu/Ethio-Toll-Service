@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Toll Service Control Officer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    }
+
+    .custom-table th,
+    .custom-table td {
+    padding: 10px;
+    text-align: center;
+    }
+
+    .custom-table th {
+    background-color: #f2f2f2;
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+    }
+    input{
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    select {  /* Add select here */
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+     table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .submit {
+        background-color: #4CAF50;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Toll Service Control Officer</h1>
+  
+
+  
+   <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ driver_form.as_p }}
+        <button type="submit" class="submit">Register</button>
+    </form>
+  
+  <h1>Toll Transactions</h1>
+  
+  <h2>Toll History</h2>
+  
+ <table>
+  {% if transactions %}
+    <tr>
+      <th>Date</th>
+      <th>Route</th>
+      <th>Toll Amount</th>
+
+    </tr>
+    {% for toll in transactions %}
+      <tr>
+        <td>{{ toll.date }}</td>
+        <td>{{ toll.route }}</td>
+        <td>${{ toll.amount }}</td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="3">No toll history available.</td>
+    </tr>
+  {% endif %}
+  </table>
+<h2>Reported Accidents</h2>
+  <table>
+  {% if accidents %}
+    <tr>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Highlight</th>
+          <th>Detail</th>
+    
+        </tr>
+    {% for acc in accidents %}
+      <tr>
+        <td>{{ acc.date }}</td>
+        <td>{{ acc.location }}</td>
+        <td>{{ acc.highlight }}</td>
+        <td>{{ acc.detail }}</td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="3">No accident report available.</td>
+    </tr>
+  {% endif %}
+  </table>
+  <h2>All Drivers</h2>
+ <table class="table custom-table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Driver ID</th>
+      <th scope="col">License Number</th>
+      <th scope="col">Vehicle Number</th>
+      <th scope="col">Vehicle Type</th>
+      <th scope="col">Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if drivers %}
+      {% for dr in drivers %}
+        <tr>
+          <td>{{ dr.first_name }}</td>
+          <td>{{ dr.last_name }}</td>
+          <td>{{ dr.email }}</td>
+          <td>{{ dr.driver_id }}</td>
+          <td>{{ dr.license_no }}</td>
+          <td>{{ dr.vehicle_number }}</td>
+          <td>{{ dr.vehicle_type }}</td>
+          <td>{{ dr.detail }}</td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="8">No accident report available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    
+    textarea {
+      height: 100px;
+    }
+    
+    input[type="submit"],
+    input[type="button"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    input[type="submit"]:hover,
+    input[type="button"]:hover {
+      background-color: #45a049;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+     .submit {
+        background-color: #4CAF50;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+     }
+  </style>
+</head>
+<body>
+  <h1>Driver Profile</h1>
+  
+
+  
+  <table>
+    <tr>
+      <th>User Name</th>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <th>First Name</th>
+      <td>{{ user.first_name}} </td>
+    </tr>
+    <tr>
+      <th>Last Name</th>
+      <td>{{user.last_name}}</td>
+    </tr>
+    <tr>
+      <th>Email</th>
+      <td>{{ user.email }} </td>
+    </tr>
+    <tr>
+      <th>License Number</th>
+      <td>{{ driver.license_no }} </td>
+    </tr>
+    <tr>
+      <th>Driver Id</th>
+      <td>{{ driver.driver_id }}</td>
+    </tr>
+    <tr>
+      <th>Vehicle Number</th>
+      <td>{{ driver.vehicle_number }}</td>
+    </tr>
+    <tr>
+      <th>Vechicle Type</th>
+      <td>{{ user.vehicle_type}}</td>
+    </tr>
+    
+    <!-- Add more rows for driver's profile information -->
+  </table>
+
+  <h2>Accident Report</h2>
+  <form method="post">
+        {% csrf_token %}
+        {{ accident_form.as_p }}
+        <button type="submit" class="submit">Send</button>
+    </form>
+  
+  
+  <h2>Toll History</h2>
+  <table>
+      {% if transactions %}
+      <tr>
+          <th>Date</th>
+          <th>Route</th>
+          <th>Toll Amount</th>
+    
+        </tr>
+      {% for toll in transactions %}
+      <tr>
+        <td>{{ toll.date }}</td>
+        <td>{{ toll.route }}</td>
+        <td>${{ toll.amount }}</td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="3">No toll history available.</td>
+    </tr>
+  {% endif %}
+  </table>
+
+
+   <h2>Accidents That I Report</h2>
+  <table>
+  {% if accidents %}
+    <tr>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Highlight</th>
+          <th>Detail</th>
+    
+        </tr>
+    {% for acc in accidents %}
+      <tr>
+        <td>{{ acc.date }}</td>
+        <td>{{ acc.location }}</td>
+        <td>{{ acc.highlight }}</td>
+        <td>{{ acc.detail }}</td>
+      </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="3">No accident report available.</td>
+    </tr>
+  {% endif %}
+  </table>
+
+</body>
+</html>
