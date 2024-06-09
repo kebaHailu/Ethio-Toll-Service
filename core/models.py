@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
-
-
-
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='driver')
     VECHICLE_CHOICE = (
@@ -22,11 +19,12 @@ class Driver(models.Model):
 class Transaction(models.Model):
     driver = models.ForeignKey(Driver, on_delete= models.DO_NOTHING, null=True)
     transfered_amount = models.IntegerField()
+    date = models.DateTimeField(auto_created=True)
     route = models.CharField(max_length=20, default='Route A')
 
 
 class Accident(models.Model):
-    driver = models.ForeignKey(Driver, on_delete= models.DO_NOTHING, null=True)
+    user = models.ForeignKey(User, on_delete= models.DO_NOTHING)
     date = models.DateTimeField(auto_now=True)
     highlight = models.CharField(max_length=200,blank=True, null=True)
     detail = models.TextField() 

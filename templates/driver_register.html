@@ -112,6 +112,8 @@
  <table>
   {% if transactions %}
     <tr>
+
+      <th>Driver Id</th>
       <th>Date</th>
       <th>Route</th>
       <th>Toll Amount</th>
@@ -119,9 +121,12 @@
     </tr>
     {% for toll in transactions %}
       <tr>
+        
+        <td>{{ toll.driver_id }}</td>
+        
         <td>{{ toll.date }}</td>
         <td>{{ toll.route }}</td>
-        <td>${{ toll.amount }}</td>
+        <td>${{ toll.transfered_amount }}</td>
       </tr>
     {% endfor %}
   {% else %}

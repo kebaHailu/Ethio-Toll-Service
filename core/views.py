@@ -2,6 +2,13 @@ from django.shortcuts import render, redirect
 from .forms import DriverForm, CustomUserCreationForm, AccidentForm
 from .models import Accident, Driver
 from django.contrib.auth.views import LoginView
+from django.http import JsonResponse
+import requests, json
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from .models import Driver, Transaction
+from django.contrib import messages
+
 
 
 def register_driver(request):
@@ -27,7 +34,7 @@ def register_driver(request):
             d.first_name = d.user.first_name
             d.last_name = d.user.last_name
             d.email = d.user.email
-    transactions = Transaction.objects.all()
+    transactions = Transaction.objects.all().order_by('-date')
     accidents = Accident.objects.all() 
     return render(request, 'driver_register.html', {
         'user_form': user_form,
@@ -37,9 +44,7 @@ def register_driver(request):
         'accidents': accidents,
     })
 
-from django.contrib.auth.decorators import login_required
-from .models import Driver, Transaction
-from django.contrib import messages
+
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
@@ -48,22 +53,23 @@ class CustomLoginView(LoginView):
 
 @login_required
 def driver_profile(request):
+    current_user = request.user
     if request.method == 'POST':
         accident_form = AccidentForm(request.POST)
         if accident_form.is_valid():
-            accident = accident_form.save() 
+            accident = accident_form.save(commit=False)
+            accident.user =  current_user 
+            accident.save() 
             return redirect('driver-profile')
-    current_user = request.user
     accident_form = AccidentForm()
     try:
         driver = Driver.objects.get(user=current_user)
-        transactions = Transaction.objects.all()
-        accidents = Accident.objects.all()
+        transactions = Transaction.objects.filter(driver=driver)
+        accidents = Accident.objects.filter(user=current_user)
     except Driver.DoesNotExist:
         driver = None
         transactions = None
         accidents = None
-    print(accidents)
     return render(request, 'driver_profile.html', {
         'user': current_user,
         'driver': driver,
@@ -73,7 +79,57 @@ def driver_profile(request):
     })
 
 
+def check_card(request):
+    url = 'http://192.168.8.117/'
+    response = requests.get(url)
+    data = json.loads(response.text)
+    print(data) 
+    uid = data.get('UID')
+    message = data.get('Message')
+    try:
+        driver = Driver.objects.get(driver_id=uid)
+        if driver:
+            if message == 'Access Granted':
 
+                amount = 10 if driver.vehicle_type == 'level_1' else 20 
+                if driver.vehicle_type == 'level_3': amount = 30 
+
+                bill = driver.balance - amount
+                if bill >= 0:
+
+                    driver.balance -= amount
+                    driver.save()
+                    
+                    new_transaction = Transaction(driver=driver, transfered_amount=amount, date=timezone.now())
+                    # new_transaction = Transaction(driver=driver, transfered_amount= amount)
+                    new_transaction.save()
+                    message = "payment done successfuly"
+                else:
+                    message = "you don't have enough payment"
+
+            driver.first_name = driver.user.first_name
+            driver.last_name = driver.user.last_name
+            driver.email = driver.user.email
+    except :
+        driver = None
+        message = "Driver not found."
+        
+
+    transactions = Transaction.objects.all().order_by('-date') 
+
+
+    return render(request,'service.html',
+                          {'uid': uid,
+                           'message':message,
+                           'driver': driver,
+                           'transactions': transactions
+                           }
+                          )
+
+def check_uid(request):
+    uid = request.GET.get('uid','')
     
+    print(request.GET)
+    return JsonResponse({'status':uid})
 
 

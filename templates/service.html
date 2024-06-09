@@ -1,108 +1,110 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
-  <title>Toll Service Control Officer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    
-    h1 {
-      text-align: center;
-    }
-    
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-    }
-    select {  /* Add select here */
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-    }
-    
-    input[type="submit"] {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    
-    input[type="submit"]:hover {
-      background-color: #45a049;
-    }
-  </style>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f2f2f2; margin: 0; padding: 0; }
+.container { width: 80%; margin: auto; overflow: hidden; }
+.box { background-color: #007BFF; color: white; padding: 20px; margin-top: 50px; text-align: center; }
+.info-box { background-color: white; color: black; padding: 20px; margin-top: 20px; border: 1px solid #ddd; }
+.info-box h2 { color: #007BFF; }
+.info-box img { max-width: 100px; border-radius: 50%; margin-bottom: 20px; box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.5); }
+.driver-history { background-color: white; color: black; padding: 20px; margin-top: 20px; border: 1px solid #ddd; }
+.driver-history h2 { color: #007BFF; }
+.driver-history table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.driver-history th, .driver-history td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+.driver-history th { background-color: #f2f2f2; }
+</style>
 </head>
 <body>
-  <h1>Toll Service Control Officer</h1>
+<div class="container">
+  <div class="box">
+    <h1 style="color: #007BFF; font-size: 36px; margin-bottom: 10px;">Welcome to the Toll Collection System</h1>
+    <p style="color: white; font-size: 20px;">Providing Efficient and Convenient Toll Services</p>
+  </div>
+  <div class="info-box">
+    <h2>Driver Information</h2>
+    <img class="driver-profile" src="https://via.placeholder.com/100" alt="Driver Photo">
+    <p><strong>First Name:</strong> {{driver.first_name}}</p>
+    <p><strong>Last Name:</strong> {{driver.last_name}}</p>
+    <p><strong>Email:</strong>{{driver.email}}</p>
+    <p><strong>Driver Id:</strong> {{driver.driver_id}}</p>
+    <p><strong>Licence Number:</strong>{{driver.license_no}}</p>
+    <p><strong>Vehicle Number:</strong> {{driver.vehicle_number}}</p>
+    <p><strong>Vehicle Type:</strong> {{driver.vehicle_type}}</p>
+    <p><strong>Total Balance:</strong> $ {{driver.balance}}</p>
+  </div>
+  <div class="info-box">
+    <h2>Latest RFID Scan</h2>
+    <p><strong>UID:</strong> <span id="uid">{{uid}}</span></p>
+    <p><strong>Message:</strong> <span id="message">{{message}}</span></p>
+  </div>
+  <div class="driver-history">
+    <h2>Drivers History</h2>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Entry Point</th>
+        <th>Amount</th>
+      </tr>
+      {% for trans in transactions %}
+      <tr>
+        <td>{{trans.date}}</td>
+        <td>{{trans.route}}</td>
+        <td>${{ trans.transfered_amount}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
   
-  <h2>Register New User</h2>
-  
-  <form>
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" required>
+</div>
+
+<script>
+  function reloadPage() {
+    location.reload();
+  }
+
+  function startPageRefresh() {
+    // Schedule page refresh every 2 seconds
+    setTimeout(reloadPage, 4000);
+  }
+
+  // Call the startPageRefresh function when the page is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    startPageRefresh();
+  });
+</script>
+<!-- <script>
+ 
+        function fetchData() {
+            fetch('http://127.0.0.1:8000/check')
+                .then(response => response.text())
+                .then(data => {
+                    const previousData = localStorage.getItem('previousData');
+                    if (data !== previousData) {
+                        // Data has changed, update the DOM
+                        document.getElementById('data-container').innerHTML = data;
+                        localStorage.setItem('previousData', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function startDataRefresh() {
+            // Initial data fetch when the page loads
+            fetchData();
+
+            // Schedule data refresh every 2 seconds
+            setInterval(fetchData, 2000);
+        }
+
+        // Call the startDataRefresh function when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            startDataRefresh();
+        });
     
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required>
-    
-    <label for="confirm-password">Confirm Password</label>
-    <input type="password" id="confirm-password" name="confirm-password" required>
-    
-    <input type="submit" value="Register">
-  </form>
-  
-  <h2>Toll Transactions</h2>
-  
-  <table>
-    <tr>
-      <th>Date</th>
-      <th>Vehicle Number</th>
-      <th>Toll Amount</th>
-      <th>Action</th>
-    </tr>
-    <tr>
-      <td>2024-06-01</td>
-      <td>ABC123</td>
-      <td>$5.00</td>
-      <td>
-        <input type="button" value="Verify">
-        <input type="button" value="Reject">
-      </td>
-    </tr>
-    <tr>
-      <td>2024-05-28</td>
-      <td>XYZ987</td>
-      <td>$4.50</td>
-      <td>
-        <input type="button" value="Verify">
-        <input type="button" value="Reject">
-      </td>
-    </tr>
-    <!-- Add more rows for toll transactions -->
-  </table>
+</script> -->
 </body>
 </html>

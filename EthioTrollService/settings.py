@@ -72,7 +72,7 @@ WSGI_APPLICATION = 'EthioTrollService.wsgi.application'
 STATIC_URL = 'static/'
 
 # Define the URL to redirect after a successful login
-LOGIN_REDIRECT_URL = '/core/driver-profile/'
+
 
 # Optionally, specify the URL where the login view is accessible
 LOGIN_URL = 'login'

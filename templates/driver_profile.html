@@ -115,7 +115,7 @@
     </tr>
     <tr>
       <th>Vechicle Type</th>
-      <td>{{ user.vehicle_type}}</td>
+      <td>{{ driver.vehicle_type}}</td>
     </tr>
     
     <!-- Add more rows for driver's profile information -->
@@ -133,6 +133,7 @@
   <table>
       {% if transactions %}
       <tr>
+          <th>ID</th>
           <th>Date</th>
           <th>Route</th>
           <th>Toll Amount</th>
@@ -140,9 +141,10 @@
         </tr>
       {% for toll in transactions %}
       <tr>
+        <td>{{toll.id}}</td>
         <td>{{ toll.date }}</td>
         <td>{{ toll.route }}</td>
-        <td>${{ toll.amount }}</td>
+        <td>${{ toll.transfered_amount }}</td>
       </tr>
     {% endfor %}
   {% else %}
