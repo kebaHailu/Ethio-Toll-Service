@@ -35,7 +35,7 @@ def register_driver(request):
             d.last_name = d.user.last_name
             d.email = d.user.email
     transactions = Transaction.objects.all().order_by('-date')
-    accidents = Accident.objects.all() 
+    accidents = Accident.objects.all().order_by('-date') 
     return render(request, 'driver_register.html', {
         'user_form': user_form,
         'driver_form': driver_form,

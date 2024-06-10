@@ -9,7 +9,7 @@ class Driver(models.Model):
         ('level_2','level_2'),
         ('level_3','level_3'),
     )
-    driver_id = models.CharField(max_length=250,blank=True, null=True)
+    driver_id = models.CharField(max_length=250,blank=True, null=True) # UUID 
     profile_pic = models.ImageField(upload_to="images/",blank=True, null=True)
     license_no = models.CharField(max_length=30,blank=True, null=True)
     vehicle_number = models.CharField(max_length=30,blank=True, null=True) 
@@ -22,6 +22,9 @@ class Transaction(models.Model):
     date = models.DateTimeField(auto_created=True)
     route = models.CharField(max_length=20, default='Route A')
 
+    def __str__(self) -> str:
+        return 'by ' + self.driver.user.first_name 
+
 
 class Accident(models.Model):
     user = models.ForeignKey(User, on_delete= models.DO_NOTHING)
@@ -29,5 +32,8 @@ class Accident(models.Model):
     highlight = models.CharField(max_length=200,blank=True, null=True)
     detail = models.TextField() 
     location = models.CharField(max_length=200,blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.highlight
 
 
